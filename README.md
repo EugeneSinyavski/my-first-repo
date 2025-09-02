@@ -4,5 +4,5 @@
 Когда-то были...  
 Но после начала курса по AQA JS всё прошло 🫠
 # Контакты
-- Email: myemail@example.com
-- GitHub: https://github.com/myusername
+- Email: e.senyavski@gmail.com
+- GitHub: https://github.com/EugeneSinyavski
