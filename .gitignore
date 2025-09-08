@@ -1,0 +1,16 @@
+# Node dependencies
+node_modules/
+
+# Playwright artifacts
+test-results/
+playwright-report/
+playwright-trace/
+playwright/.cache/
+
+
+# macOS system files
+.DS_Store
+.Trashes
+Thumbs.db
+
+
