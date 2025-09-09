@@ -10,8 +10,8 @@ test.describe('Sauce Demo Login', () => {
   test('User should successfully log in', async ({ page }) => {
     // Enter username
     await page
-      .getByPlaceholder('Username')
-      .fill('standard_user');
+      .getByPlaceholder('Username') // Здесь и далее код с логикой тестов лучше прописывать в одну строку.
+      .fill('standard_user'); // Так проще читать его. Имеет смысл делать переносы когда действительно большие блоки кода, которые нужно логически разделять.
 
     // Enter password
     await page
