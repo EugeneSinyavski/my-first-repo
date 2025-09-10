@@ -19,4 +19,15 @@ export class InventoryPage extends BasePage {
   async addItemToCart(itemName) {
     await this.components.itemDescription.filter({ hasText: itemName }).getByRole('button', { name: 'Add to cart' }).click();
   }
+
+  async getInventoryItems() {
+    return await this.components.inventoryItems.allTextContents();
+  }
+
+  async getAddedInventoryItems() {
+    return await this.components.itemDescription
+      .filter({ has: this.components.removeItemBtn })
+      .getByTestId('inventory-item-name')
+      .allTextContents();
+  }
 }
