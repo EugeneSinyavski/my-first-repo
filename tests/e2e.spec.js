@@ -4,6 +4,8 @@ import { LoginPage } from '../PO/pages/login.page';
 import { InventoryPage } from '../PO/pages/inventory.page';
 import { CartPage } from '../PO/pages/cart.page';
 import { CheckoutStepOnePage } from '../PO/pages/checkoutstepone.page';
+import { CheckoutStepTwoPage } from '../PO/pages/checkoutsteptwo.page';
+import { CheckoutComplitePage } from '../PO/pages/checkoutcomplite.page';
 
 test.describe('Sauce Demo - Purchase Flow', () => {
   test('Login, buy most expensive item, and complete checkout', async ({ page }) => {
@@ -45,5 +47,18 @@ test.describe('Sauce Demo - Purchase Flow', () => {
 
     await checkoutStepOnePage.fillUserInfo('Test', 'User', '12345');
     await checkoutStepOnePage.clickContinueBtn();
+
+    // ==== CheckoutStepTwoPage ====
+    // Verify title, go to finish step
+    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
+    const checkoutStepTwoTitle = await checkoutStepTwoPage.getPageTitle();
+    await expect(checkoutStepTwoTitle).toBe('Checkout: Overview');
+
+    await checkoutStepTwoPage.clickFinishBtn();
+
+    // ==== CheckoutComplitePage ====
+    const checkoutComplitePage = new CheckoutComplitePage(page);
+    const completionMessage = await checkoutComplitePage.getCompletionMessage();
+    await expect(completionMessage).toBe('Thank you for your order!');
   });
 });
