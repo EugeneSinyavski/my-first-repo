@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 test.describe('API-тесты для Restful-booker', () => {
   const baseURL = 'https://restful-booker.herokuapp.com';
 
-  test('should create a booking using POST', async ({ request }) => {
+  test('API tests for Restful-Booker', async ({ request }) => {
     const bookingData = {
       firstname: 'SpongeBob',
       lastname: 'SquarePantsu',
@@ -22,26 +22,59 @@ test.describe('API-тесты для Restful-booker', () => {
       ],
     };
 
-    // Send POST request to create a new booking
+    // ==== POST ====
+    // Create a new booking and verify response
     const response = await request.post(`${baseURL}/booking`, { data: bookingData });
-
-    // Verify the response status is 200 OK
     expect(response.status()).toBe(200);
 
-    // Verify that response contains bookingid field
     const body = await response.json();
     expect(body).toHaveProperty('bookingid');
-    const bookingId = body.bookingid;
 
-    // Verify that response contains bookingid field
+    const bookingId = body.bookingid;
     expect(body.booking).toMatchObject(bookingData);
 
-    // Send GET request to retrieve the booking
+    // ==== GET ====
+    // Retrieve the created booking and verify data
     const responseGet = await request.get(`${baseURL}/booking/${bookingId}`);
     expect(responseGet.status()).toBe(200);
 
-    // Verify GET response matches the original booking data
     const bodyGet = await responseGet.json();
     expect(bodyGet).toMatchObject(bookingData);
+
+    const adminData = {
+      username: 'admin',
+      password: 'password123',
+    };
+
+    // ==== PUT ====
+    // Update booking data and verify response
+    const responseToken = await request.post(`${baseURL}/auth`, { data: adminData });
+    const { token } = await responseToken.json();
+
+    bookingData.firstname = 'Eugene';
+    bookingData.lastname = 'Krabs';
+    bookingData.totalprice = 0;
+
+    const config = {
+      headers: {
+        Cookie: `token=${token}`,
+      },
+    };
+
+    const responsePut = await request.put(`${baseURL}/booking/${bookingId}`, { data: bookingData, ...config });
+    expect(responsePut.status()).toBe(200);
+
+    const bodyPut = await responsePut.json();
+    expect(bodyPut.firstname).toBe('Eugene');
+    expect(bodyPut.lastname).toBe('Krabs');
+    expect(bodyPut.totalprice).toBe(0);
+
+    // ==== DELETE ====
+    // Delete the booking and verify it no longer exists
+    const responseDelete = await request.delete(`${baseURL}/booking/${bookingId}`, { ...config });
+    expect(responseDelete.status()).toBe(201);
+
+    const resAfterDelete = await request.get(`${baseURL}/booking/${bookingId}`);
+    expect(resAfterDelete.status()).toBe(404);
   });
 });
