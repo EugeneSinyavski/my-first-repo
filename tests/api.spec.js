@@ -31,8 +31,17 @@ test.describe('API-тесты для Restful-booker', () => {
     // Verify that response contains bookingid field
     const body = await response.json();
     expect(body).toHaveProperty('bookingid');
+    const bookingId = body.bookingid;
 
     // Verify that response contains bookingid field
     expect(body.booking).toMatchObject(bookingData);
+
+    // Send GET request to retrieve the booking
+    const responseGet = await request.get(`${baseURL}/booking/${bookingId}`);
+    expect(responseGet.status()).toBe(200);
+
+    // Verify GET response matches the original booking data
+    const bodyGet = await responseGet.json();
+    expect(bodyGet).toMatchObject(bookingData);
   });
 });
