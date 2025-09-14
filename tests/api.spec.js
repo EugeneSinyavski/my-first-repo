@@ -1,77 +1,52 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
+import { adminData, bookingData, updatedData } from '../data/testData';
 
-test.describe('API-тесты для Restful-booker', () => {
-  const baseURL = 'https://restful-booker.herokuapp.com';
+let baseURL;
+let bookingId;
+let token;
 
-  test('API tests for Restful-Booker', async ({ request }) => {
-    const bookingData = {
-      firstname: 'SpongeBob',
-      lastname: 'SquarePantsu',
-      totalprice: 99999,
-      depositpaid: true,
-      bookingdates: {
-        checkin: '2025-09-15',
-        checkout: '2026-09-14',
-      },
-      additionalneeds: [
-        'Extra bubbles',
-        'A Krabby Patty',
-        'Jellyfishing net',
-        'Snail food for Gary',
-      ],
-    };
+test.describe('API tests for Restful-Booker', () => {
+  // === Setup before all tests: create booking and get auth token ===
+  test.beforeAll(async ({ request }) => {
+    baseURL = 'https://restful-booker.herokuapp.com';
 
-    // ==== POST ====
-    // Create a new booking and verify response
     const response = await request.post(`${baseURL}/booking`, { data: bookingData });
     expect(response.status()).toBe(200);
 
     const body = await response.json();
     expect(body).toHaveProperty('bookingid');
 
-    const bookingId = body.bookingid;
+    bookingId = body.bookingid;
     expect(body.booking).toMatchObject(bookingData);
 
-    // ==== GET ====
-    // Retrieve the created booking and verify data
+    const responseToken = await request.post(`${baseURL}/auth`, { data: adminData });
+    token = (await responseToken.json()).token;
+  });
+
+  test('GET: retrieve the created booking and verify data', async ({ request }) => {
     const responseGet = await request.get(`${baseURL}/booking/${bookingId}`);
     expect(responseGet.status()).toBe(200);
 
     const bodyGet = await responseGet.json();
     expect(bodyGet).toMatchObject(bookingData);
+  });
 
-    const adminData = {
-      username: 'admin',
-      password: 'password123',
-    };
+  test('PUT: update booking data correctly', async ({ request }) => {
+    const config = { headers: { Cookie: `token=${token}` } };
 
-    // ==== PUT ====
-    // Update booking data and verify response
-    const responseToken = await request.post(`${baseURL}/auth`, { data: adminData });
-    const { token } = await responseToken.json();
-
-    bookingData.firstname = 'Eugene';
-    bookingData.lastname = 'Krabs';
-    bookingData.totalprice = 0;
-
-    const config = {
-      headers: {
-        Cookie: `token=${token}`,
-      },
-    };
-
-    const responsePut = await request.put(`${baseURL}/booking/${bookingId}`, { data: bookingData, ...config });
+    const responsePut = await request.put(`${baseURL}/booking/${bookingId}`, { data: updatedData, ...config });
     expect(responsePut.status()).toBe(200);
 
     const bodyPut = await responsePut.json();
     expect(bodyPut.firstname).toBe('Eugene');
     expect(bodyPut.lastname).toBe('Krabs');
     expect(bodyPut.totalprice).toBe(0);
+  });
 
-    // ==== DELETE ====
-    // Delete the booking and verify it no longer exists
-    const responseDelete = await request.delete(`${baseURL}/booking/${bookingId}`, { ...config });
+  // === Cleanup after all tests: DELETE booking ===
+  test.afterAll(async ({ request }) => {
+    const responseDelete = await request.delete(`${baseURL}/booking/${bookingId}`, { headers: { Cookie: `token=${token}` } });
     expect(responseDelete.status()).toBe(201);
 
     const resAfterDelete = await request.get(`${baseURL}/booking/${bookingId}`);
