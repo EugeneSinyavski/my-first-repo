@@ -2,15 +2,13 @@
 import { test, expect } from '@playwright/test';
 import { adminData, bookingData, updatedData } from '../data/testData';
 
-let baseURL;
-let bookingId;
-let token;
-
 test.describe('API tests for Restful-Booker', () => {
+  const baseURL = 'https://restful-booker.herokuapp.com';
+  let bookingId;
+  let token;
+
   // === Setup before all tests: create booking and get auth token ===
   test.beforeAll(async ({ request }) => {
-    baseURL = 'https://restful-booker.herokuapp.com';
-
     const response = await request.post(`${baseURL}/booking`, { data: bookingData });
     expect(response.status()).toBe(200);
 
