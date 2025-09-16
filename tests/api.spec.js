@@ -22,30 +22,31 @@ test.describe('API tests for Restful-Booker', () => {
     token = (await responseToken.json()).token;
   });
 
-  test('GET: retrieve the created booking and verify data', async ({ request }) => {
-    const responseGet = await request.get(`${baseURL}/booking/${bookingId}`);
-    expect(responseGet.status()).toBe(200);
+  test('GET /booking/{id} - should retrieve created booking', async ({ request }) => {
+    const response = await request.get(`${baseURL}/booking/${bookingId}`);
+    expect(response.status()).toBe(200);
 
-    const bodyGet = await responseGet.json();
-    expect(bodyGet).toMatchObject(bookingData);
+    const body = await response.json();
+    expect(body).toMatchObject(bookingData);
   });
 
-  test('PUT: update booking data correctly', async ({ request }) => {
+  test('PUT /booking/{id} - should update booking data', async ({ request }) => {
     const config = { headers: { Cookie: `token=${token}` } };
 
-    const responsePut = await request.put(`${baseURL}/booking/${bookingId}`, { data: updatedData, ...config });
-    expect(responsePut.status()).toBe(200);
+    const response = await request.put(`${baseURL}/booking/${bookingId}`, { data: updatedData, ...config });
+    expect(response.status()).toBe(200);
 
-    const bodyPut = await responsePut.json();
-    expect(bodyPut.firstname).toBe('Eugene');
-    expect(bodyPut.lastname).toBe('Krabs');
-    expect(bodyPut.totalprice).toBe(0);
+    const body = await response.json();
+    expect(body.firstname).toBe(updatedData.firstname);
+    expect(body.lastname).toBe(updatedData.lastname);
+    expect(body.totalprice).toBe(updatedData.totalprice);
+    expect(body).toMatchObject(updatedData);
   });
 
   // === Cleanup after all tests: DELETE booking ===
   test.afterAll(async ({ request }) => {
-    const responseDelete = await request.delete(`${baseURL}/booking/${bookingId}`, { headers: { Cookie: `token=${token}` } });
-    expect(responseDelete.status()).toBe(201);
+    const response = await request.delete(`${baseURL}/booking/${bookingId}`, { headers: { Cookie: `token=${token}` } });
+    expect(response.status()).toBe(201);
 
     const resAfterDelete = await request.get(`${baseURL}/booking/${bookingId}`);
     expect(resAfterDelete.status()).toBe(404);
