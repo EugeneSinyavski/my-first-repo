@@ -2,7 +2,9 @@
 import { test, expect } from '@playwright/test';
 import { adminData, bookingData, updatedData } from '../data/testData';
 
-test.describe('API tests for Restful-Booker', () => {
+test.describe('API tests for Restful-Booker', {
+  tag: '@api',
+}, () => {
   const baseURL = 'https://restful-booker.herokuapp.com';
   let bookingId;
   let token;

@@ -2,7 +2,9 @@
 import { test, expect } from '@playwright/test';
 import { pages } from '../PO/pages/factory.page';
 
-test.describe('Sauce Demo - Purchase Flow', () => {
+test.describe('Sauce Demo - Purchase Flow', {
+  tag: '@ui',
+}, () => {
   test('Login, buy most expensive item, and complete checkout', async ({ page }) => {
     // Create all page objects at the beginning
     const loginPage = pages('login', page);

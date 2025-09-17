@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ./ --fix"
+    "lint": "eslint ./ --fix",
+    "tests:ui": "playwright test --grep @ui", 
+    "tests:api": "playwright test --grep @api", 
+    "tests:all": "playwright test" 
+
   },
   "keywords": [],
   "author": "",
