@@ -23,5 +23,5 @@ export const updatedData = {
 };
 export const adminData = {
   username: 'admin',
-  password: 'password123',
+  password: process.env.ADMIN_PASSWORD,
 };

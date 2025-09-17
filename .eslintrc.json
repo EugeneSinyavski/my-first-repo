@@ -16,9 +16,8 @@
     "func-names": "off",
     "object-curly-newline": "off",
     "import/prefer-default-export": "off",
-    "no-return-await": "off",                 
+    "no-return-await": "off",
     "import/no-extraneous-dependencies": "off"
-    
   },
   "overrides": [
     {
