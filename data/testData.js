@@ -8,7 +8,6 @@ export const bookingData = {
     checkout: '2026-09-14',
   },
   additionalneeds: 'Snail food for Gary',
-
 };
 
 export const updatedData = {
@@ -21,7 +20,6 @@ export const updatedData = {
     checkout: '2026-09-14',
   },
   additionalneeds: 'Snail food for Gary',
-
 };
 export const adminData = {
   username: 'admin',

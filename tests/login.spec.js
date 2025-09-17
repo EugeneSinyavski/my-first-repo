@@ -17,6 +17,8 @@ test.describe('Sauce Demo Login', () => {
     await loginPage.login('locked_out_user', 'secret_sauce');
 
     // Verify that the error message contains the correct text
-    await expect(page.getByTestId('error')).toHaveText('Epic sadface: Sorry, this user has been locked out.');
+    await expect(page.getByTestId('error')).toHaveText(
+      'Epic sadface: Sorry, this user has been locked out.'
+    );
   });
 });

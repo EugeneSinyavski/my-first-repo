@@ -9,7 +9,7 @@ export class InventoryPage extends BasePage {
 
   async findMostExpensiveItem() {
     const priceList = await this.components.priceItemList.allTextContents();
-    const numPrices = priceList.map(x => parseFloat(x.slice(1)));
+    const numPrices = priceList.map((x) => parseFloat(x.slice(1)));
     const maxPrice = Math.max(...numPrices);
 
     const neededItem = await this.components.itemDescription.filter({ hasText: `${maxPrice}` });
@@ -17,7 +17,10 @@ export class InventoryPage extends BasePage {
   }
 
   async addItemToCart(itemName) {
-    await this.components.itemDescription.filter({ hasText: itemName }).getByRole('button', { name: 'Add to cart' }).click();
+    await this.components.itemDescription
+      .filter({ hasText: itemName })
+      .getByRole('button', { name: 'Add to cart' })
+      .click();
   }
 
   async getInventoryItems() {
